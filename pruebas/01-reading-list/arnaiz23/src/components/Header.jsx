@@ -1,11 +1,23 @@
-import { useId } from "react"
+import { useId, useContext } from "react"
 
-const Header = ({ booksDb, booksList, filters, setFilters }) => {
+import { FilterContext } from "../context/FilterContext"
+
+const Header = ({ booksDb, booksList }) => {
+  const { filters, setFilters } = useContext(FilterContext)
+
   const pagesId = useId()
   const genreId = useId()
 
   const genresMap = booksDb.library.map(({ book }) => book.genre)
   const genresList = [...new Set(genresMap)]
+
+  const handlePageChange = (e) => {
+    setFilters({ ...filters, pages: e.target.value })
+  }
+
+  const handleGenreChange = (e) => {
+    setFilters({ ...filters, genre: e.target.value })
+  }
 
   return (
     <header className="w-full p-8 flex flex-col gap-3">
@@ -22,9 +34,7 @@ const Header = ({ booksDb, booksList, filters, setFilters }) => {
               min={0}
               max={1500}
               value={filters.pages}
-              onChange={(e) => {
-                setFilters({ ...filters, pages: e.target.value })
-              }}
+              onChange={handlePageChange}
             />
             <span>{filters.pages}</span>
           </div>
@@ -35,9 +45,7 @@ const Header = ({ booksDb, booksList, filters, setFilters }) => {
           <div className="flex justify-center items-center gap-2">
             <select
               id={genreId}
-              onChange={(e) => {
-                setFilters({ ...filters, genre: e.target.value })
-              }}
+              onChange={handleGenreChange}
               className="bg-transparent border border-white p-2"
             >
               <option value="all">Todos</option>

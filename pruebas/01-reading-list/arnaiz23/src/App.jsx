@@ -1,13 +1,11 @@
-import { useState } from "react"
+import { useContext } from "react"
 
 import booksDb from "../../books.json"
 import Header from "./components/Header"
+import { FilterContext } from "./context/FilterContext"
 
 function App() {
-  const [filters, setFilters] = useState({
-    genre: "all",
-    pages: 0,
-  })
+  const { filters } = useContext(FilterContext)
 
   const filterBooks = (booksDb, genre, pages) => {
     return booksDb.library.filter(({ book }) => {
@@ -19,23 +17,20 @@ function App() {
 
   return (
     <div className="bg-gray-800 text-white h-screen">
-      <Header
-        booksDb={booksDb}
-        booksList={booksList}
-        filters={filters}
-        setFilters={setFilters}
-      />
+      <Header booksDb={booksDb} booksList={booksList} />
 
-      <div className="w-9/12 grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 m-auto">
-        {booksList.map(({ book }) => (
-          <img
-            alt={`Cover of ${book.title}`}
-            src={book.cover}
-            key={book.ISBN}
-            className="w-56 h-auto"
-          />
-        ))}
-      </div>
+      <main>
+        <div className="w-9/12 grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 m-auto">
+          {booksList.map(({ book }) => (
+            <img
+              alt={`Cover of ${book.title}`}
+              src={book.cover}
+              key={book.ISBN}
+              className="w-56 h-auto"
+            />
+          ))}
+        </div>
+      </main>
     </div>
   )
 }
