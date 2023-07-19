@@ -1,17 +1,9 @@
-import { useContext } from "react"
-
 import booksDb from "../../books.json"
 import Header from "./components/Header"
-import { FilterContext } from "./context/FilterContext"
+import { useFilter } from "./hooks/useFilter"
 
 function App() {
-  const { filters } = useContext(FilterContext)
-
-  const filterBooks = (booksDb, genre, pages) => {
-    return booksDb.library.filter(({ book }) => {
-      return book.pages >= pages && (genre === "all" || book.genre === genre)
-    })
-  }
+  const {filters, filterBooks} = useFilter()
 
   const booksList = filterBooks(booksDb, filters.genre, filters.pages)
 
