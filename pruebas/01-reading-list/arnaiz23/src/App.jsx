@@ -3,27 +3,44 @@ import { useState, useId } from "react"
 import booksDb from "../../books.json"
 
 function App() {
+  const pagesId = useId()
   const genreId = useId()
   const genresMap = booksDb.library.map(({ book }) => book.genre)
   const genresList = [...new Set(genresMap)]
 
   const [genre, setGenre] = useState("all")
+  const [pages, setPages] = useState(0)
 
-  const filterBooksGenre = (booksDb, genre) => {
-    if (genre === "all") {
-      return booksDb.library.map(book => book)
-    }
-    return booksDb.library.filter(({ book }) => book.genre === genre)
+  const filterBooks = (booksDb, genre, pages) => {
+    // if (genre === "all") {
+    //   return booksDb.library.map(book => book)
+    // }
+    // return booksDb.library.filter(({ book }) => book.genre === genre && book.pages >= pages)
+    return booksDb.library.filter(({ book }) => {
+      return book.pages >= pages && (genre === "all" || book.genre === genre)
+    })
   }
 
-  const booksList = filterBooksGenre(booksDb, genre)
-
-  console.log(booksList)
+  const booksList = filterBooks(booksDb, genre, pages)
 
   return (
     <>
       <h1 className="text-xl">Libros</h1>
 
+      <div>
+        <label htmlFor={pagesId}>Filtrar por páginas</label>
+        <input
+          type="range"
+          id={pagesId}
+          min={0}
+          max={1500}
+          value={pages}
+          onChange={(e) => {
+            setPages(e.target.value)
+          }}
+        />
+        <span>{pages}</span>
+      </div>
       <div>
         <label htmlFor={genreId}>Filtrar por género</label>
         <select
@@ -39,6 +56,7 @@ function App() {
             </option>
           ))}
         </select>
+        <span>{booksList.length}</span>
       </div>
       <div className="w-9/12 grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-3 m-auto">
         {booksList.map(({ book }) => (
